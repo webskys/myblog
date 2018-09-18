@@ -1,0 +1,37 @@
+<% let totalPages = Math.ceil(pages.totalCount/pages.numPerPage) %>
+<% let linkUrl=''; if (typeof genre != "undefined") { %>
+<% linkUrl = '/article/?genre=' + genre.genreName + '&page=' %>
+<%} else{%>
+<% linkUrl = '/article/?genre=all&page=' %>
+<% } %>
+<% let prevNum = Math.floor(pages.showPages/2) ; let nextNum = Math.floor(pages.showPages/2); %>
+<%  if(totalPages <= pages.showPages){ %>
+<% prevNum = pages.currentPage-1 %>
+<% nextNum = totalPages - pages.currentPage %>
+<% }else{%>
+<% if(pages.currentPage <= prevNum){ %>
+<%  prevNum = pages.currentPage - 1 %>
+<%  nextNum = pages.showPages - pages.currentPage %>
+<% } %>
+
+<% if(pages.currentPage >= totalPages - nextNum){ %>
+<%  nextNum = totalPages - pages.currentPage %>
+<%  prevNum = pages.showPages - nextNum - 1 %>
+<% } %>
+<% } %>
+<% if(totalPages > 1){ %>
+    <ul class="pageswarp cl">
+        <li class="<%= pages.currentPage == 1?'disabled':'' %>"><a href="<%= linkUrl + 1 %>">&laquo;</a></li>
+        <% for(let i = 0;i < prevNum;i++){ %>
+        <% let pageNum = pages.currentPage - prevNum + i %>
+        <li><a href="<%= linkUrl + pageNum %>"><%= pageNum %></a></li>
+        <% } %>
+        <li class="active"><span><%= pages.currentPage %></span></li>
+        <% for(let i = 1;i <= nextNum;i++){ %>
+        <% let pageNum = pages.currentPage + i %>
+        <li><a href="<%= linkUrl + pageNum %>"><%= pageNum %></a></li>
+        <% } %>
+        <li class="<%= pages.currentPage >= totalPages?'disabled':'' %>"><a href="<%= linkUrl + totalPages %>">&raquo;</a></li>
+    </ul>
+<% } %>
+

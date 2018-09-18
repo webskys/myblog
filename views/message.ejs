@@ -1,0 +1,65 @@
+<div class="asmessage">
+    <div class="msg-magtop20 msg-title">留 言</div>
+    <div class="msg-magtop20 msg-c">
+        个人自学搭建的网站，诸多不尽如人意，欢迎指点。本身就漏洞百出，也请大神们放我一马，别黑我。
+    </div>
+    <div class="msg-magtop20 msg-i">
+        <div class="cl">
+            <div class="msg-item fl">
+                <input name="name" id="msg-name" type="text" class="msg-input" placeholder="请输入姓名...">
+            </div>
+            <div class="msg-item fl">
+                <input name="email" id="msg-email" type="email" class="msg-input" placeholder="请输入邮箱...">
+            </div>
+        </div>
+        <div class="msg-magtop20">
+            <textarea name="comments" id="comments" class="msg-input msg-textarea" onresize="false" placeholder="请输入留言内容..."></textarea>
+        </div>
+        <div class="msg-magtop20">
+            <button type="button" id="submitmsg" class="submitmsg">提 交</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#submitmsg").click(function () {
+        let emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
+        let name = $("#msg-name").val();
+        let email = $("#msg-email").val();
+        let comment = $("#comments").val();
+
+        let editError = '';
+        if (name === '') {
+            editError = '姓名不能是空的。';
+        } else if (email === '') {
+            editError = '邮箱不能为空';
+        } else if (comment === '') {
+            editError = '留言内容不能为空';
+        }else if(!emailReg.test(email)){
+            editError = '邮箱格式不正确';
+        }
+        if (editError !== '') {
+            $('body').LiMask({content:editError});
+            return
+        }
+        $.showLoading();
+        let postData = {
+            name: name,
+            email: email,
+            comment: comment
+        }
+        $.ajax({
+            cache: false,
+            url: '/message',
+            type: 'post',
+            data: postData,
+            dataType: 'json'
+        }).then(function (result) {
+            $('body').LiMask({content:result.message});
+            $("#msg-name").add("#msg-email").add("#comments").val('');
+        }).catch(function () {
+            $('body').LiMask({content:'服务器错误，请稍后重试'});
+        }).always(function () {
+            $.closeLoading();
+        })
+    })
+</script>

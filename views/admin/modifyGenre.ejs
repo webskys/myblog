@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/style/admin.css">
+    <link rel="stylesheet" href="/editor-md/css/editormd.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">添加分类</h3>
+    <div class="page-panel">
+        <div class="page-panel-con">
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">分类名称</div>
+                <div class="pfl a-item-con">
+                    <input type="text" placeholder="分类名称" id="genre-title" class="a-item-input" value="<%= genre.title %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">分类路径</div>
+                <div class="pfl a-item-con">
+                    <input type="text" placeholder="分类路径" id="genre-url" class="a-item-input" value="<%= genre.genreName %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">是否导航</div>
+                <div class="pfl a-item-rad">
+                    <label class="fancy-radio">
+                        <input name="nav" value="true" type="radio" <%= genre.isNav === true  ? "checked" : '' %>>
+                        <span><i></i>是</span>
+                    </label>
+                    <label class="fancy-radio">
+                        <input name="nav" value="false" type="radio" <%= genre.isNav === false  ? "checked" : '' %>>
+                        <span><i></i>否</span>
+                    </label>
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">导航排序</div>
+                <div class="pfl a-item-con">
+                    <input type="number" placeholder="导航排序" id="genre-sort" class="a-item-input" value="<%= genre.sort %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">ICON</div>
+                <div class="pfl a-item-con">
+                    <input type="text" placeholder="分类ICON" id="uploadfileurl" class="a-item-input" value="<%= genre.icon %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">　</div>
+                <div class="pfl a-item-con">
+                    <div class="uploadfilewarp">
+                        <input class="defaultfilebtn" type="file" id="uploadfilebtn" name="editormd-image-file" accept="image/*">
+                        <input class="uploadbtn" type="button" value="本地上传">
+                    </div>
+                </div>
+            </div>
+            <div class="a-item-submit">
+                <button type="button" id="submitGenre" class="ui-button">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    $(function () {
+        $("#submitGenre").click(function () {
+            let reg = /^[a-zA-Z]+$/;
+            let dreg = /^(0|[1-9][0-9]*)$/g;
+            let genreTitle = $("#genre-title").val();
+            let genreUrl = $("#genre-url").val();
+            let genreNav = $('input:radio[name="nav"]:checked').val()
+            let genreIcon = $("#uploadfileurl").val()
+            let genreSort = $("#genre-sort").val()
+            if ([genreTitle, genreUrl, genreNav,genreIcon,genreSort].some(function (e) {
+                return e === '' || e === undefined
+            })) {
+                alert('分类信息不能为空')
+                return
+            }
+            if(!reg.test(genreUrl)){
+                alert('路径只能用英文字母')
+                return
+            }
+            if(!dreg.test(genreSort)){
+                alert('排序只能用数字')
+                return
+            }
+            $.showLoading();
+            if(genreNav === 'true'){
+                genreNav = true;
+            }else{
+                genreNav = false;
+            }
+
+            let postData = {
+                id:'<%= genre._id %>',
+                title: genreTitle,
+                genreName: genreUrl,
+                isNav: genreNav,
+                icon: genreIcon,
+                sort:genreSort
+            }
+            $.ajax({
+                cache: false,
+                url: '/admin/genre/edit/<%= genre._id %>',
+                type: 'post',
+                data: postData,
+                dataType: 'json'
+            }).then(function (result) {
+                $.closeLoading();
+                if (result.state === 0) {
+                    alert(result.message);
+                }
+                if (result.state === 1) {
+                    alert(result.message);
+                    window.location.href = '/admin/genre/';
+                }
+            }).catch(function (err) {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+        })
+    });
+</script>
+</body>
+</html>

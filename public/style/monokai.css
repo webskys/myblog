@@ -1,0 +1,231 @@
+.hljs * {
+    box-sizing: border-box;
+}
+.hljs {
+    color: #333;
+    overflow: hidden;
+    font-family: "Microsoft YaHei", Helvetica, "Meiryo UI", "Malgun Gothic", "Segoe UI", "Trebuchet MS", "Monaco", monospace, Tahoma, STXihei, "华文细黑", STHeiti, "Helvetica Neue", "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "宋体", Heiti, "黑体", sans-serif;
+    font-size: 16px;
+    line-height: 2;
+    word-wrap: break-word;
+}
+
+.hljs blockquote {
+    padding: 10px 15px;
+    color: #777;
+    border-left: 4px solid #333030;
+    background-color: #f7f7f7;
+}
+.hljs code {
+    padding: 0.2em 0.5em;
+    margin: 0;
+    background-color: #333030;
+    color: #FFFFFF;
+    border-radius: 3px;
+}
+
+.hljs code, .hljs kbd, .hljs pre {
+    font-family: "Meiryo UI", "YaHei Consolas Hybrid", Consolas, "Malgun Gothic", "Segoe UI", "Trebuchet MS", Helvetica, monospace, monospace;
+}
+.hljs pre {
+    word-wrap: normal;
+    padding: 16px;
+    overflow: auto;
+    background-color: #333030;
+    color: #FFFFFF;
+    border-radius: 3px;
+}
+
+.hljs p, .hljs blockquote, .hljs ul, .hljs ol, .hljs dl, .hljs table, .hljs pre {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+.hljs blockquote p{
+    margin-bottom: 0px;
+}
+.hljs table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.hljs hr {
+    height: 0;
+    margin: 15px 0;
+    overflow: hidden;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.hljs hr:before {
+    display: table;
+    content: "";
+}
+
+.hljs hr:after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+.hljs table {
+    width: 100%;
+    overflow: auto;
+    word-break: keep-all;
+}
+
+.hljs table th {
+    font-weight: bold;
+}
+
+.hljs table th,
+.hljs table td {
+    padding: 6px 13px;
+    border: 1px solid #ddd;
+}
+
+.hljs table tr {
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+.hljs table tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+
+.hljs h1 {
+    font-size: 30px;
+}
+
+.hljs h2 {
+    font-size: 21px;
+}
+
+.hljs h3 {
+    font-size: 16px;
+}
+
+.hljs h4 {
+    font-size: 14px;
+}
+
+.hljs h5 {
+    font-size: 12px;
+}
+
+.hljs h6 {
+    font-size: 11px;
+}
+.hljs h1 {
+    margin: 0.67em 0;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #eee;
+}
+.hljs h2 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #eee;
+}
+.hljs h1,
+.hljs h2,
+.hljs h3,
+.hljs h4,
+.hljs h5,
+.hljs h6 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+
+
+
+
+
+
+/*
+
+Atom One Dark by Daniel Gamage
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
+
+base:    #282c34
+mono-1:  #abb2bf
+mono-2:  #818896
+mono-3:  #5c6370
+hue-1:   #56b6c2
+hue-2:   #61aeee
+hue-3:   #c678dd
+hue-4:   #98c379
+hue-5:   #e06c75
+hue-5-2: #be5046
+hue-6:   #d19a66
+hue-6-2: #e6c07b
+
+*/
+
+.hljs-comment,
+.hljs-quote {
+    color: #5c6370;
+    font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+    color: #c678dd;
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+    color: #e06c75;
+}
+
+.hljs-literal {
+    color: #56b6c2;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+    color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+    color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+    color: #d19a66;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+    color: #61aeee;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+.hljs-link {
+    text-decoration: underline;
+}

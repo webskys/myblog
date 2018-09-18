@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script type="text/javascript" src="/js/base.js"></script>
+    <link rel="stylesheet" href="/style/base-reset.css">
+    <link rel="stylesheet" href="/style/main.css">
+    <link href="/style/monokai.css" rel="stylesheet">
+</head>
+<body>
+<%- include('includes/header') %>
+<div class="body-warp cl">
+    <div class="right-warp">
+        <%- include('includes/right') %>
+    </div>
+    <div class="left-warp">
+        <div class="left-panel">
+            <div class="article-header">
+                <h1><a href="/article/?genre=<%= article.genre.genreName %>"><img src="<%= article.genre.icon %>" class="articlegenre"></a><%= article.title %></h1>
+                <div class="article-dif">
+                    <span class="visitspan"><%= article.visit_count %></span>
+                    <span class="timespan"><%= moment(article.create_at, 'YYYYMMDD').fromNow() %></span>
+                </div>
+                <div class="articlebfrief">
+                    <%= article.brief %>
+                </div>
+            </div>
+            <div class="articleconwarp">
+                <div class="articlecon hljs">
+                    <%- markdown.render(article.content) %>
+                </div>
+            </div>
+            <div class="articlebottom">
+            <div class="articelnp">
+                <% if(nextData){ %>
+                <div class="prevarticle"><a href="/article/<%= nextData._id %>"><span class="previcon"></span><span><%= nextData.title %></span></a></div>
+                <% }else{ %>
+                <div class="prevarticle"><span class="previcon"></span><span>没有了</span></div>
+                <% } %>
+                <% if(prevData){ %>
+                <div class="nextarticle"><a href="/article/<%= prevData._id %>"><span><%= prevData.title %></span><span class="nexticon"></a></div>
+                <% }else{ %>
+                <div class="nextarticle"><span>没有了</span><span class="nexticon"></span></div>
+                <% } %>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+<script src="/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

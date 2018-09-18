@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/style/admin.css">
+    <link rel="stylesheet" href="/editor-md/css/editormd.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">回复留言</h3>
+    <div class="page-panel">
+        <div class="page-panel-con">
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">改名</div>
+                <div class="pfl a-item-con">
+                    <input type="text" placeholder="改名" readonly="readonly" id="message-name" class="a-item-input" value="<%= message.name %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">Email</div>
+                <div class="pfl a-item-con">
+                    <input type="text" placeholder="邮箱"  readonly="readonly" id="message-email" class="a-item-input" value="<%= message.email %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">内容</div>
+                <div class="pfl a-item-con">
+                    <textarea class="messagecon" id="message-comment" readonly="readonly"><%= message.comment %></textarea>
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">回复</div>
+                <div class="pfl a-item-con">
+                    <textarea id="message-reply" class="messagecon"></textarea>
+                </div>
+            </div>
+            <div class="a-item-submit">
+                <button type="button" id="submitMessage" class="ui-button">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    $(function () {
+        $("#submitMessage").click(function () {
+            let messageReply = $("#message-reply").val();
+            $.showLoading();
+            let postData = {
+                id:'<%= message._id %>',
+                reply: messageReply
+            }
+            $.ajax({
+                cache: false,
+                url: '/admin/message/edit/<%= message._id %>',
+                type: 'post',
+                data: postData,
+                dataType: 'json'
+            }).then(function (result) {
+                $.closeLoading();
+                if (result.state === 0) {
+                    alert(result.message);
+                }
+                if (result.state === 1) {
+                    alert(result.message);
+                    window.location.href = '/admin/message/';
+                }
+            }).catch(function () {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+        })
+    });
+</script>
+</body>
+</html>

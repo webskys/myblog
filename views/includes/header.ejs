@@ -1,0 +1,47 @@
+<div id='markLoading' class='mark-loading'>
+    <div class='spinner'>
+        <div class='double-bounce1'></div>
+        <div class='double-bounce2'></div>
+    </div>
+</div>
+<div class="topheader">
+    <div class="top-con cl">
+        <div class="top-logo fl">
+            <img src="/images/logo.png">
+        </div>
+        <div class="top-search fl">
+            <form action="">
+                <input type="text" class="search-inp" value="" placeholder="search">
+                <button type="button" class="search-btn" id="searchbtn">搜 索</button>
+            </form>
+        </div>
+        <div class="top-right fr">
+            <ul class="topnav fr cl">
+                <li><a href="/">首页</a></li>
+                <% genres.forEach(function (item) { %>
+
+                <% if (item.isNav) { %>
+                <li><a href="/article/?genre=<%= item.genreName %> "><%= item.title %></a></li>
+                <% } %>
+                <% }) %>
+                <li class="dropnavbar">
+                    <i class="dropnavbtn" id="dropnavbtn"><img src="/images/drop.png"></i>
+                    <div class="dropnav" id="dropnav">
+                        <% genres.forEach(function (item) { %>
+                        <% if (!item.isNav) { %>
+                        <a href="/article/?genre=<%= item.genreName %> "><%= item.title %></a>
+                        <% } %>
+                        <% }) %>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

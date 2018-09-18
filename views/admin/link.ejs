@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/style/admin.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">连接列表<a href="/admin/link/add" class="addarticle">添加连接</a></h3>
+    <div class="page-panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">连接</h3>
+        </div>
+        <div class="page-panel-con" id="genreslist">
+            <% if ( links.length >= 1 && links) { %>
+            <table class="page-table">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>连接图片</th>
+                    <th>连接地址</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% links.forEach(function (link) { %>
+                <tr>
+                    <td><%= link.title %></td>
+                    <td><img src="<%= link.icon %>" style="width: 170px; height: 50px"> </td>
+                    <td><%= link.url %></td>
+                    <td><a class="art-operate art-modify" href="/admin/link/edit/<%= link._id %>">修改</a><span class="art-operate link-delete" data-id="<%= link._id %>">删除</span></td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <%  }else{ %>
+                <div class="nothasinfo">暂无连接</div>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    $(function () {
+        $(document).on('click', '.link-delete', function () {
+            let $this = $(this)
+            $.ajax({cache: false, url: '/admin/link/delete/'+$this.attr('data-id'), type: 'post', dataType: 'json'}).then(function (result) {
+                $.closeLoading();
+                alert(result.message);
+                $this.parents('tr').remove();
+            }).catch(function () {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+        });
+    })
+</script>
+</body>
+</html>
