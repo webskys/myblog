@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="login-warp">
+    <div class="login-con">
+        <h1>管理登录</h1>
+        <div class="login-item cl">
+            <div class="login-label pfl">用户名</div>
+            <div class="login-inp">
+                <input type="text" name="username" id="username" class="login-input">
+            </div>
+        </div>
+        <div class="login-item cl">
+            <div class="login-label pfl">密　码</div>
+            <div class="login-inp">
+                <input type="password" name="password" id="password" class="login-input">
+            </div>
+        </div>
+        <div class="cl" style="margin-top: 15px">
+            <div class="login-item pfl cl" style="width: 175px; margin-top: 0px">
+                <div class="login-label pfl">验证码</div>
+                <div class="login-inp">
+                    <input type="password" name="verify" id="verify" class="login-input">
+                </div>
+            </div>
+            <div class="login-verify pfl"></div>
+        </div>
+        <div class="login-footer">
+            <button type="button" id="login_btn" class="login-btn">登　录</button>
+        </div>
+
+    </div>
+</div>
+<script src="/script/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#login_btn").not('.disable').click(function () {
+            let $this =  $("#login_btn");
+            let userName = $('#username').val();
+            let password = $('#password').val();
+            if(userName == ''){
+                alert('请输入用户名')
+                return
+            }
+            if(password == ''){
+                alert('请输入密码')
+                return
+            }
+            $this.addClass('disable')
+            var xhrLogin = $.ajax({
+                cache: false,
+                url: '/admin/login',
+                type: 'post',
+                data: {
+                    userName: userName,
+                    pass: password
+                },
+                dataType: 'json'
+            })
+            xhrLogin.then(function (data) {
+                $this.removeClass('disable');
+                if(data.state == 1){
+                    alert('登录成功');
+                    location.href = '/admin/'
+                }else {
+                    alert(data.message)
+                }
+            }).catch(function () {
+                $this.removeClass('disable');
+                alert("服务器错误，请稍后重试")
+            })
+        })
+    })
+</script>
+</body>
+</html>

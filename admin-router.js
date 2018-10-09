@@ -63,6 +63,24 @@ router.post('/link/edit/:tid' , check.checkLogin , admin.modifyLink);
 router.get('/link/add' , check.checkLogin , admin.addLink);
 router.post('/link/add' , check.checkLogin , admin.addLink);
 
+
+//糟列表
+router.get('/sentence' , check.checkLogin , admin.sentence);
+//ajax获取糟列表
+router.post('/sentence' , check.checkLogin , admin.sentence);
+//添加糟
+router.get('/sentence/add' , check.checkLogin , admin.addSentence);
+router.post('/sentence/add' , check.checkLogin , admin.addSentence);
+//删除糟
+router.post('/sentence/delete/:tid' , check.checkLogin , admin.deleteSentence);
+//修改文章
+router.get('/sentence/edit/:tid' , check.checkLogin , admin.modifySentence);
+router.post('/sentence/edit/:tid' , check.checkLogin , admin.modifySentence);
+
+
+
+
+
 //留言列表
 router.get('/message' , check.checkLogin , admin.message);
 //删除留言

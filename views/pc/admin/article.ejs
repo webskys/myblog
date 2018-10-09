@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">文章列表<a href="/admin/article/add" class="addarticle" target="_blank">添加文章</a></h3>
+    <div class="page-panel">
+        <!--<div class="panel-heading">
+            <h3 class="panel-title">文章分类</h3>
+        </div>-->
+        <div class="page-panel-con" id="genres"></div>
+    </div>
+    <div class="page-panel">
+        <!--<div class="panel-heading">
+            <h3 class="panel-title">文章</h3>
+        </div>-->
+        <div class="page-panel-con" id="articles"></div>
+    </div>
+    <div class="page-panel">
+        <div class="aritclepages pages"></div>
+    </div>
+
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    let requestData = {
+        genre: '',
+        limit: 20,
+        page: 1
+    };
+    $(function () {
+            $.showLoading();
+            let genres = getGenres();
+            genres.then(function (result) {
+                getArticles();
+                let genres = result.data;
+                let genreHtml = '';
+                genres.forEach(function (item) {
+                    genreHtml += `<button type="button" class="btn btn-default" data-genre="${item._id}">${item.title}</button>　`
+                });
+                $('#genres').html(genreHtml);
+                $("#genres").on('click','button',function () {
+                    if($(this).hasClass('active')){
+                        return
+                    }
+                    $("#genres").find('.btn').removeClass('active')
+                    $(this).addClass('active')
+                    requestData.genre = $(this).attr('data-genre');
+                    requestData.page = 1;
+                    getArticles();
+                })
+            }).catch(function () {
+                alert("服务器错误，请稍后重试")
+
+            })
+        $(document).on('click', '.art-delete', function () {
+            if(!confirm('确定要删除吗')){
+                return
+            }
+            let $this = $(this)
+            $.ajax({cache: false, url: '/admin/article/delete/'+$this.attr('data-id'), type: 'post', dataType: 'json'}).then(function (result) {
+                $.closeLoading();
+                alert(result.message);
+                $this.parents('tr').remove();
+            }).catch(function (err) {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+
+        });
+    });
+
+    function getGenres() {
+        return $.ajax({cache: false, url: '/admin/genre', type: 'post', dataType: 'json'})
+    }
+    function getArticles() {
+        $.showLoading();
+        $.ajax({cache: false, url: '/admin/article', type: 'post', data: requestData, dataType: 'json'}).then(function (result) {
+            $.closeLoading();
+            articleHtmlAndPages(result);
+        }).catch(function (err) {
+            $.closeLoading();
+            alert("服务器错误，请稍后重试")
+        })
+
+    }
+
+    function articleHtmlAndPages(result) {
+        let articles = result.data.articles;
+        let articleHtml;
+        if(articles.length <= 0){
+            articleHtml = `<div class="nothasinfo">文章暂无</div>`;
+        }else {
+            articleHtml = `
+                <table class="page-table">
+                    <thead>
+                    <tr>
+                        <th>标题</th>
+                        <th>分类</th>
+                        <th>题图</th>
+                        <th>访问人数</th>
+                        <th>发布时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${articles.map(article => `
+                    <tr>
+                        <td><a href="/article/${article._id}" target="_blank">${article.title}</a></td>
+                        <td>${article.genre.title}</td>
+                        <td>${article.icon}</td>
+                        <td>${article.visit_count}</td>
+                        <td>${article.create_at}</td>
+                        <td><a class="art-operate art-modify" href="/admin/article/edit/${article._id}" target="_blank">修改</a><span class="art-operate art-delete" data-id="${article._id}">删除</span></td>
+                    </tr>
+                    `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        $('#articles').html(articleHtml);
+
+        $('.aritclepages').showPages({
+            totalCount: result.data.totalCount,
+            currentPage: result.data.currentPage,
+            showPages: 7,
+            onPageChange: function (num) {
+                requestData.page = num;
+                getArticles();
+            }
+        });
+    }
+</script>
+</body>
+</html>

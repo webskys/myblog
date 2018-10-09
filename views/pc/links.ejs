@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<div class="banner banner02"></div>
+<div class="warp cl">
+    <div class="list-warp">
+        <div class="links-con">
+            <ul class="cl">
+                <% links.forEach(function (link) { %>
+                <li><a href="<%= link.url %>" target="_blank" title="<%= link.title %>"><img src="<%= link.icon %>"></a></li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+</body>
+</html>
+
+
+
+

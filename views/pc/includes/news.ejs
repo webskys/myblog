@@ -1,0 +1,12 @@
+<div class="right-panel">
+    <div class="right-panel-title">最新文章</div>
+    <div class="right-panel-con">
+        <% if (typeof(latestArticles) !== 'undefined' && latestArticles.length > 0) { %>
+        <ul class="right-ul-item">
+            <% latestArticles.forEach(function (article) { %>
+            <li>- <a href="/article/<%= article._id %>"><%= article.title %></a></li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+</div>

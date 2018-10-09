@@ -1,0 +1,17 @@
+<div class="banner banner01">
+    <% if ( genreString === 'all') { %>
+    <div class="warp">
+        <% genres.forEach(function (genre) { %>
+        <% if (genre.isNav) { %>
+        <a href="/article/?genre=<%= genre.genreName %>" class="index-genre-a">
+            <div class="index-icon"><img src="<%= genre.icon %>"></div>
+            <div class="index-title"><%= genre.title %></div>
+        </a>
+        <% }}) %>
+    </div>
+    <% }else{ %>
+    <div class="warp" style="text-align:center">
+        <span class="top-middle"><img src="<%= genre.icon %>"><i><%= genre.title %></i></span>
+    </div>
+    <% } %>
+</div>

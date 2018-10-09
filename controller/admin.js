@@ -8,23 +8,23 @@ const articleOperator = require('../operator').articleOperator;
 const genreOperator = require('../operator').genreOperator;
 const linkOperator = require('../operator').linkOperator;
 const messageOperator = require('../operator').messageOperator;
-
-
-
-
+const sentenceOperator = require('../operator').sentenceOperator;
+const moment = require('moment');
+const markdown = require('markdown-it')();
+moment.locale('zh-cn');
 
 exports.index = function (req,res) {
     let pageData = {};
     pageData.pageTitle = '后面管理首页';
     pageData.pageSign = 'indexPage';
-    res.render('admin/index',pageData);
+    res.render('pc/admin/index',pageData);
 };
 
 //显示登录页
 exports.showLogin = function (req,res) {
     let pageData = {};
     pageData.pageTitle = '管理员登录';
-    res.render('admin/login',pageData);
+    res.render('pc/admin/login',pageData);
 };
 //登录请求页
 exports.login = function (req,res) {
@@ -85,7 +85,7 @@ exports.manager = function (req,res) {
     let pageData = {};
     pageData.pageTitle = '管理员列表';
     pageData.pageSign = 'managerPage';
-    res.render('admin/manager',pageData);
+    res.render('pc/admin/manager',pageData);
 };
 //添加管理员
 exports.addManager = function (req,res) {
@@ -111,12 +111,13 @@ exports.modifyManager = function (req,res,next) {
         data:{}
     })
 };
+
 //文章列表
 exports.article = function(req,res){
     let pageData = {};
     pageData.pageTitle = '文章管理';
     pageData.pageSign = 'articlePage';
-    res.render('admin/article',pageData);
+    res.render('pc/admin/article',pageData);
 };
 //ajax请求文章列表
 exports.articleList = function(req,res){
@@ -141,7 +142,6 @@ exports.articleList = function(req,res){
             }
         })
     }).catch(function (err) {
-        console.log(err);
         res.json({
             state:0,
             message:err,
@@ -162,7 +162,7 @@ exports.modifyArticle = function(req,res,next){
             pageData.genres = genres;
             pageData.pageTitle = '修改文章';
             pageData.pageSign = 'articlePage';
-            res.render('admin/modifyArticle',pageData);
+            res.render('pc/admin/modifyArticle',pageData);
         }).catch(function (err) {
             next()
         });
@@ -191,7 +191,6 @@ exports.modifyArticle = function(req,res,next){
                     data:{}
                 })
             }).catch(function () {
-                console.log(err);
                 res.json({
                     state:0,
                     message:err,
@@ -211,7 +210,7 @@ exports.addArticle = function(req,res,next){
             pageData.genres = genres;
             pageData.pageTitle = '添加文章';
             pageData.pageSign = 'articlePage';
-            res.render('admin/addArticle',pageData);
+            res.render('pc/admin/addArticle',pageData);
         }).catch(function (err) {
             next()
         });
@@ -248,7 +247,6 @@ exports.addArticle = function(req,res,next){
             })
 
         }).catch(function () {
-            console.log(err);
             res.json({
                 state:0,
                 message:err,
@@ -311,7 +309,7 @@ exports.genre = function(req,res,next){
         pageData.pageTitle = '文章分类管理';
         pageData.pageSign = 'genrePage';
         pageData.genres = genres;
-        res.render('admin/genre',pageData);
+        res.render('pc/admin/genre',pageData);
     }).catch(function (err) {
         next(err)
     });
@@ -323,7 +321,7 @@ exports.addGenre = function(req,res,next){
         let pageData = {};
         pageData.pageTitle = '添加分类';
         pageData.pageSign = 'genrePage';
-        res.render('admin/addGenre',pageData);
+        res.render('pc/admin/addGenre',pageData);
     }
     if(method === 'post'){
         let opt = {
@@ -388,7 +386,6 @@ exports.addGenre = function(req,res,next){
                 })
             }
         }).catch(function (err) {
-            console.log(err)
             res.json({
                 state:0,
                 message:'读取分类数据错误',
@@ -425,7 +422,7 @@ exports.modifyGenre = function(req,res,next){
             pageData.genre = genre;
             pageData.pageTitle = '修改分类';
             pageData.pageSign = 'genrePage';
-            res.render('admin/modifyGenre',pageData);
+            res.render('pc/admin/modifyGenre',pageData);
         }).catch(function (err) {
             next()
         });
@@ -524,6 +521,157 @@ exports.genreList = function(req,res){
     })
 };
 
+//槽列表
+exports.sentence = function(req,res,next){
+    let method = req.method.toLowerCase();
+    if (method === 'get'){
+        let pageData = {};
+        pageData.pageTitle = '槽管理';
+        pageData.pageSign = 'sentencePage';
+        res.render('pc/admin/sentence',pageData);
+    }
+    if(method === 'post'){//ajax请求槽列表
+        let query = {};
+        let page = parseInt(req.body.page,10);
+        page = page > 0 ? page : 1;
+        let limit = parseInt(req.body.limit,10) || 20;
+        let options ={skip: (page - 1) * limit, limit: limit, sort: {create_at:-1}};
+        let querySentences = sentenceOperator.getSentenceByQuery(query,options);
+        let queryCount = sentenceOperator.getCountByQuery(query);
+        Promise.all([querySentences,queryCount]).then(function ([sentences,count]){
+            let newArr = sentences.map((item)=>{
+                let json={};
+                json.create_at = moment(item.create_at).format('YYYY-MM-DD')
+                json.content = markdown.render(item.content);
+                json._id = item._id;
+                return json;
+            });
+            res.json({
+                state:1,
+                message:'success',
+                data:{
+                    totalCount:count,
+                    currentPage:page,
+                    sentences:newArr
+                }
+            })
+        }).catch(function (err) {
+            res.json({
+                state:0,
+                message:err,
+                data:{}
+            })
+        })
+    }
+
+};
+//添加槽
+exports.addSentence = function(req,res,next){
+    let method = req.method.toLowerCase();
+    if (method === 'get'){
+        let pageData = {};
+        pageData.pageTitle = '添加槽';
+        pageData.pageSign = 'sentencePage';
+        res.render('pc/admin/addSentence',pageData);
+    }
+    if(method === 'post'){
+        let opt = {
+            content:req.body.content,
+            create_at:req.body.create_at
+        };
+        // 验证
+        let editError = '';
+        if (opt.content === '') {
+            editError = '内容不能为空。';
+        }
+        if (editError !== '') {
+            res.json({
+                state:0,
+                message:editError,
+                data:{}
+            })
+        }
+        sentenceOperator.addNewSentence(opt).then(function (sentence) {
+            res.json({
+                state:1,
+                message:'发布槽成功',
+                data:{}
+            })
+        }).catch(function (err) {
+            res.json({
+                state:0,
+                message:'保存数据错误',
+                data:{}
+            })
+        })
+    }
+};
+//删除槽
+exports.deleteSentence = function(req,res,next){
+    let id = req.params.tid;
+    sentenceOperator.deleteSentenceById(id).then(function () {
+        res.json({
+            state:1,
+            message:'删除成功',
+            data:{}
+        })
+    }).catch(function (err) {
+        res.json({
+            state:0,
+            message:err,
+            data:{}
+        })
+    })
+};
+//修改槽
+exports.modifySentence = function(req,res,next){
+    let method = req.method.toLowerCase();
+    if(method === "get"){
+        let pageData = {};
+        let sentenceId = req.params.tid;
+        let querySentence = sentenceOperator.getSentenceById(sentenceId);
+        Promise.all([querySentence]).then(function ([sentence]) {
+            pageData.sentence = sentence;
+            pageData.sentence.changTime = moment(pageData.sentence.create_at).format('YYYY-MM-DD')
+            pageData.pageTitle = '修改槽';
+            pageData.pageSign = 'sentencePage';
+            res.render('pc/admin/modifySentence',pageData);
+        }).catch(function (err) {
+            next()
+        });
+    }
+    if( method === "post" ){
+        let id = req.body.id;
+        if(req.body.content === '' || req.body.create_at === ''){
+            res.json({
+                state:0,
+                message:'内容和日期不能为空',
+                data:{}
+            })
+        }else {
+            let opt = {
+                content:req.body.content,
+                create_at:req.body.create_at
+            };
+            let sentence = sentenceOperator.sentenceUpdate(id,opt);
+            sentence.then(function(sentence){
+                res.json({
+                    state:1,
+                    message:'修改成功',
+                    data:{}
+                })
+            }).catch(function () {
+                res.json({
+                    state:0,
+                    message:err,
+                    data:{}
+                })
+            })
+        }
+    }
+};
+
+
 
 //连接管理列表
 exports.link = function(req,res,next){
@@ -533,7 +681,7 @@ exports.link = function(req,res,next){
         pageData.pageTitle = '连接管理';
         pageData.pageSign = 'linkPage';
         pageData.links = links;
-        res.render('admin/link',pageData);
+        res.render('pc/admin/link',pageData);
     }).catch(function (err) {
         next(err)
     });
@@ -545,7 +693,7 @@ exports.addLink = function(req,res,next){
         let pageData = {};
         pageData.pageTitle = '添加连接';
         pageData.pageSign = 'linkPage';
-        res.render('admin/addLink',pageData);
+        res.render('pc/admin/addLink',pageData);
     }
     if(method === 'post'){
         let opt = {
@@ -636,7 +784,7 @@ exports.modifyLink = function(req,res,next){
             pageData.link = link;
             pageData.pageTitle = '修改连接';
             pageData.pageSign = 'linkPage';
-            res.render('admin/modifyLink',pageData);
+            res.render('pc/admin/modifyLink',pageData);
         }).catch(function (err) {
             next(err)
         });
@@ -707,15 +855,27 @@ exports.modifyLink = function(req,res,next){
     }
 };
 
+
+
 //留言管理列表
 exports.message = function (req,res,next) {
     let pageData = {};
     let queryMessages = messageOperator.getMessageByQuery({});
     Promise.all([queryMessages]).then(function ([messages]) {
+        let newArr = messages.map(function (item) {
+            let json = {}
+            json._id = item._id;
+            json.reply = item.reply;
+            json.email = item.email;
+            json.name = item.name;
+            json.create_at = moment(item.create_at).format('YYYY-MM-DD');
+            json.reply_at = item.reply_at ? moment(item.reply_at).format('YYYY-MM-DD'):"未回复";
+            return json
+        });
         pageData.pageTitle = '留言管理';
         pageData.pageSign = 'messagePage';
-        pageData.messages = messages;
-        res.render('admin/message',pageData);
+        pageData.messages = newArr;
+        res.render('pc/admin/message',pageData);
     }).catch(function (err) {
         next(err)
     });
@@ -737,8 +897,6 @@ exports.deleteMessage = function (req,res,next) {
         })
     })
 };
-
-
 //回复留言
 exports.modifyMessage = function(req,res,next){
     let method = req.method.toLowerCase();
@@ -750,7 +908,7 @@ exports.modifyMessage = function(req,res,next){
             pageData.message = message;
             pageData.pageTitle = '回复留言';
             pageData.pageSign = 'messagePage';
-            res.render('admin/modifyMessage',pageData);
+            res.render('pc/admin/modifyMessage',pageData);
         }).catch(function (err) {
             next(err)
         });

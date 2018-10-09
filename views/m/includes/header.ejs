@@ -1,0 +1,26 @@
+<div id='markLoading' class='mark-loading'>
+    <div class='spinner'>
+        <div class='double-bounce1'></div>
+        <div class='double-bounce2'></div>
+    </div>
+</div>
+<header class="header">
+    <div class="top-logo"><a href="/"><img src="/img/logo.png"></a></div>
+    <div class="top-mid"><%= pageTitle %></div>
+    <div class="top-bar" id="navBar">
+        <div class="bar-ling"></div>
+        <div class="bar-ling"></div>
+        <div class="bar-ling"></div>
+    </div>
+</header>
+<nav class="nav" id="nav">
+    <div class="nav-header"><i class="iconfont nav-close">&#xe60a;</i>全部分类</div>
+    <div class="nav-warp">
+        <% genres.forEach(function (genre) { %>
+        <a href="/article/?genre=<%= genre.genreName %>" class="nav-warp-item">
+            <img src="<%= genre.icon %>">
+            <div class="nav-warp-title"><%= genre.title %></div>
+        </a>
+        <% }) %>
+    </div>
+</nav>

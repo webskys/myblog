@@ -1,0 +1,11 @@
+<% if(genreString != 'all'){%> %>
+<div class="right-panel">
+    <div class="right-panel-title">分类栏目</div>
+    <div class="right-panel-con genre-i">
+        <% genres.forEach(function (item) { %>
+        <a href="/article/?genre=<%= item.genreName %>" <%= item.genreName === genreString ? 'class=active' : '' %> ><img src="<%= item.icon %>"></a>
+        <% }) %>
+    </div>
+</div>
+<% } %>
+

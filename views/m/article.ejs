@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= pageTitle %></title>
+    <meta name="description" content="<%= article.brief %>">
+    <link rel="stylesheet" href="/css/prism.css">
+    <%- include('includes/meta') %>
+</head>
+<body>
+<div class="warp">
+    <%- include('includes/header') %>
+    <div class="content">
+        <article class="article-detail">
+            <a href="/article/?genre=<%= article.genre.genreName %>"><img src="<%= article.genre.icon %>" class="article-genre"></a>
+            <h1 class="article-h1"><%= article.title %></h1>
+            <div class="art-det-ct">
+                <i class="iconfont">&#xe92b;</i>
+                <span><%= article.visit_count %></span>
+                <i class="iconfont">&#xe66a;</i>
+                <span><%= article.create_time %></span>
+            </div>
+            <div class="article-brief"><%= article.brief %></div>
+            <div class="article-de-con">
+                <%- article.content %>
+            </div>
+            <div class="article-np">
+                <% if(nextData){ %>
+                <div class="prevarticle"><span class="iconfont">&#xe7e8;</span><a href="/article/<%= nextData._id %>"><%= nextData.title %></a></div>
+                <% }else{ %>
+                <div class="prevarticle"><span class="iconfont">&#xe7e8;</span><span>没有了</span></div>
+                <% } %>
+                <% if(prevData){ %>
+                <div class="nextarticle"><span class="iconfont">&#xe7e8;</span><a href="/article/<%= prevData._id %>"><%= prevData.title %></a></div>
+                <% }else{ %>
+                <div class="nextarticle"><span class="iconfont">&#xe7e8;</span><span>没有了</span></div>
+                <% } %>
+            </div>
+        </article>
+    </div>
+    <%- include('includes/footer') %>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.article-de-con code').map(function() {
+            Prism.highlightElement(this);
+        });
+        $('.article-de-con a[href]').each(function() {
+            $(this).attr('target', '_blank');
+        });
+        $('.article-de-con table').wrap('<div class="table-warp" />')
+
+
+    });
+</script>
+</body>
+</html>

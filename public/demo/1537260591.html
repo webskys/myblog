@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js与css3:transition实现动画 单元格随机排列</title>
+</head>
+<body>
+<div class="warp" id="warp"></div>
+<div style="text-align: center">
+    <button type="button" id="chang">chang</button>
+</div>
+<style>
+    * {
+        padding: 0px;
+        margin: 0px
+    }
+    .warp {
+        position: relative;
+        width: 210px;
+        height: 210px;
+        margin: auto;
+        background-color: aliceblue;
+        font-size: 0;
+    }
+    .warp span {
+        transition: all linear .5s;
+        position: absolute;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #cccccc;
+        font-size: 12px;
+        text-align: center;
+        line-height: 20px;
+        overflow: hidden;
+    }
+</style>
+<script>
+    let fragment = document.createDocumentFragment();
+    for (let i = 0; i < 100; i++) {
+        let span = document.createElement('span');
+        let text = document.createTextNode(i);
+        span.appendChild(text);
+        fragment.appendChild(span);
+    }
+    let warp = document.getElementById('warp');
+    warp.appendChild(fragment);
+    let spanlist = warp.getElementsByTagName('span');
+    let arr = [];
+    getpos();
+    changpos();
+    function getpos() {
+        for (let i = 1; i <= 10; i++) {//行
+            for (let j = 1; j <= 10; j++) {//列
+                let posleft = (i - 1) * 21 + 'px';
+                let postop = (j - 1) * 21 + 'px';
+                let posi = [posleft, postop]
+                arr.push(posi);
+            }
+        }
+    }
+    function changpos() {
+        for (let i = 0; i < 100; i++) {//行
+            elspan = spanlist[i];
+            elspan.style.top = arr[i][0];
+            elspan.style.left = arr[i][1];
+        }
+    }
+    function changarr() {
+        arr.sort(function () {
+            return Math.random() > .5 ? -1 : 1;
+        })
+        changpos();
+    }
+    document.getElementById('chang').addEventListener('click', changarr);
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<% let totalPages = Math.ceil(pages.totalCount/pages.numPerPage) %>
+<% let linkUrl=''; if (typeof genre != "undefined") { %>
+<% linkUrl = '/article/?genre=' + genre.genreName + '&page=' %>
+<%} else{%>
+<% linkUrl = '/article/?genre=all&page=' %>
+<% } %>
+<% let prevNum = Math.floor(pages.showPages/2) ; let nextNum = Math.floor(pages.showPages/2); %>
+<%  if(totalPages <= pages.showPages){ %>
+<% prevNum = pages.currentPage-1 %>
+<% nextNum = totalPages - pages.currentPage %>
+<% }else{%>
+<% if(pages.currentPage <= prevNum){ %>
+<%  prevNum = pages.currentPage - 1 %>
+<%  nextNum = pages.showPages - pages.currentPage %>
+<% } %>
+
+<% if(pages.currentPage >= totalPages - nextNum){ %>
+<%  nextNum = totalPages - pages.currentPage %>
+<%  prevNum = pages.showPages - nextNum - 1 %>
+<% } %>
+<% } %>
+<% if(totalPages > 1){ %>
+    <div class="pages-warp cl">
+        <% if(pages.currentPage <= 1){ %>
+        <span class="iconfont">&#xe61f;</span>
+        <span class="iconfont">&#xe764;</span>
+        <% }else {%>
+        <a href="<%= linkUrl + 1 %>" class="iconfont">&#xe61f;</a>
+        <a href="<%= linkUrl + (pages.currentPage-1) %>" class="iconfont">&#xe764;</a>
+        <% } %>
+        <% for(let i = 0;i < prevNum;i++){ %>
+        <% let pageNum = pages.currentPage - prevNum + i %>
+        <a href="<%= linkUrl + pageNum %>"><%= pageNum %></a>
+        <% } %>
+        <span class="active"><%= pages.currentPage %></span>
+        <% for(let i = 1;i <= nextNum;i++){ %>
+        <% let pageNum = pages.currentPage + i %>
+        <a href="<%= linkUrl + pageNum %>"><%= pageNum %></a>
+        <% } %>
+        <% if(pages.currentPage >= totalPages){ %>
+        <span class="iconfont">&#xe603;</span>
+        <span class="iconfont">&#xe601;</span>
+        <% }else {%>
+        <a href="<%= linkUrl + (pages.currentPage+1) %>" class="iconfont">&#xe603;</a>
+        <a href="<%= linkUrl + totalPages %>" class="iconfont">&#xe601;</a>
+        <% } %>
+    </div>
+<% } %>
+

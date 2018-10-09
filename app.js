@@ -9,9 +9,9 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
-const moment = require('moment');
 mongoose.Promise = global.Promise;
 const favicon = require('express-favicon');
+let checkMobile = require('./controller/checkMobile');
 
 
 let app = express();
@@ -40,14 +40,18 @@ app.use(express.static(path.join(__dirname,'uploadfiles')));
 app.use(favicon(path.join(__dirname,'public','images','favicon.ico')))
 app.set('views',path.join(__dirname,'views'));
 app.set('view engine','ejs');
+
+
+app.use(function(req,res,next){
+    let browser = checkMobile(req.headers['user-agent']);
+    req.isMobile = browser.mobile || browser.ios || browser.android || browser.iPhone || browser.iPad;
+    next();
+});
+
 app.use('/',webRouter);
 app.use('/admin',adminRouter);
 
 
-
-app.locals.markdown = require('markdown-it')();
-moment.locale('zh-cn');
-app.locals.moment = moment;
 
 
 
@@ -59,9 +63,8 @@ app.use(function(req, res, next) {
 });
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error',{title:err.status,message:err.message});
+    res.render('pc/error',{title:err.status,message:err.message});
 });
-
 
 let server = http.createServer(app);
 server.listen(cfg.port,'127.0.0.1');

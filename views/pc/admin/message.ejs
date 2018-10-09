@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <div class="page-panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">连接</h3>
+        </div>
+        <div class="page-panel-con" id="genreslist">
+            <% if ( messages.length >= 1 && messages) { %>
+            <table class="page-table">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>邮箱</th>
+                    <th>留言时间</th>
+                    <th>回复</th>
+                    <th>回复时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% messages.forEach(function (message) { %>
+                <tr>
+                    <td><%= message.name %></td>
+                    <td><%= message.email %></td>
+                    <td><%= message.create_at %></td>
+                    <td><%= message.reply %></td>
+                    <td><%= message.reply_at %></td>
+                    <td><a class="art-operate art-modify" href="/admin/message/edit/<%= message._id %>">回复</a><span class="art-operate message-delete" data-id="<%= message._id %>">删除</span></td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <%  }else{ %>
+                <div class="nothasinfo">暂无留言</div>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    $(function () {
+        $(document).on('click', '.message-delete', function () {
+            if(!confirm('确定要删除吗')){
+                return
+            }
+            let $this = $(this)
+            $.ajax({cache: false, url: '/admin/message/delete/'+$this.attr('data-id'), type: 'post', dataType: 'json'}).then(function (result) {
+                $.closeLoading();
+                alert(result.message);
+                $this.parents('tr').remove();
+            }).catch(function () {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+        });
+    })
+</script>
+</body>
+</html>

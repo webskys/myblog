@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">槽列表<a href="/admin/sentence/add" class="addarticle">添加槽</a></h3>
+    <div class="page-panel">
+        <div class="page-panel-con" id="articles"></div>
+    </div>
+    <div class="page-panel">
+        <div class="aritclepages pages"></div>
+    </div>
+
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    let requestData = {
+        limit: 20,
+        page: 1
+    };
+    $(function () {
+        getArticles();
+        $(document).on('click', '.art-delete', function () {
+            if(!confirm('确定要删除吗')){
+                return
+            }
+            let $this = $(this)
+            $.ajax({cache: false, url: '/admin/sentence/delete/'+$this.attr('data-id'), type: 'post', dataType: 'json'}).then(function (result) {
+                $.closeLoading();
+                alert(result.message);
+                $this.parents('tr').remove();
+            }).catch(function (err) {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+
+        });
+    });
+    function getArticles() {
+        $.showLoading();
+        $.ajax({cache: false, url: '/admin/sentence', type: 'post', data: requestData, dataType: 'json'}).then(function (result) {
+            $.closeLoading();
+            articleHtmlAndPages(result);
+        }).catch(function (err) {
+            $.closeLoading();
+            alert("服务器错误，请稍后重试")
+        })
+    }
+    function articleHtmlAndPages(result) {
+        let articles = result.data.sentences;
+        let articleHtml;
+        if(articles.length <= 0){
+            articleHtml = `<div class="nothasinfo">暂无内容</div>`;
+        }else {
+            articleHtml = `
+                <table class="page-table">
+                    <thead>
+                    <tr>
+                        <th>发布时间</th>
+                        <th>内容</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${articles.map(article => `
+                    <tr>
+                        <td>${article.create_at}</td>
+                        <td>${article.content}</td>
+                        <td><a class="art-operate art-modify" href="/admin/sentence/edit/${article._id}">修改</a><span class="art-operate art-delete" data-id="${article._id}">删除</span></td>
+                    </tr>
+                    `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        $('#articles').html(articleHtml);
+
+        $('.aritclepages').showPages({
+            totalCount: result.data.totalCount,
+            currentPage: result.data.currentPage,
+            showPages: 7,
+            onPageChange: function (num) {
+                alert(num)
+                requestData.page = num;
+                getArticles();
+            }
+        });
+    }
+    function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g,function(c){
+            return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];
+        });
+    }
+</script>
+</body>
+</html>

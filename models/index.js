@@ -5,6 +5,8 @@ const genreSchema = require('./genre');
 const adminSchema = require('./admin');
 const linkSchema = require('./link');
 const messageSchema = require('./message');
+const sentenceSchema = require('./sentence');
+
 
 
 mongoose.connect(cfg.mongodb,{useNewUrlParser:true});
@@ -19,3 +21,6 @@ exports.genreModel = mongoose.model('genre',genreSchema);
 exports.adminModel = mongoose.model('admin',adminSchema);
 exports.linkModel = mongoose.model('link',linkSchema);
 exports.messageModel = mongoose.model('message',messageSchema);
+exports.sentenceModel = mongoose.model('sentence',sentenceSchema);
+
+

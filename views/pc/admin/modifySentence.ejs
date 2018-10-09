@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/editor-md/css/editormd.css">
+</head>
+<body>
+<%- include('header') %>
+<%- include('sidebar') %>
+<div class="warp-con">
+    <h3 class="page-title">修改槽</h3>
+    <div class="page-panel">
+        <div class="page-panel-con">
+
+
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">日期</div>
+                <div class="pfl a-item-con">
+                    <input type="date" placeholder="日期" id="sentence-date" class="a-item-input" value="<%= sentence.changTime %>">
+                </div>
+            </div>
+            <div class="a-item cl">
+                <div class="pfl a-item-sign">内容</div>
+                <div class="pfl a-item-con">
+                    <textarea id="sentence-con" class="a-item-input a-item-area" placeholder="内容" rows="10" style="width: 700px;height: 300px" onresize="false"><%= sentence.content %></textarea>
+                </div>
+            </div>
+            <div class="a-item-submit">
+                <button type="button" id="submitLink" class="ui-button">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('footer') %>
+<script type="text/javascript">
+    $(function () {
+        $("#submitLink").click(function () {
+
+            let sentencecon = $("#sentence-con").val();
+            let sentencedate = $("#sentence-date").val();
+            if([sentencecon].some(function (e) {
+                return e === '' || e === undefined
+            })){
+                alert('内容不能为空')
+                return
+            }
+            $.showLoading();
+            let postData = {
+                id:'<%= sentence._id %>',
+                content:sentencecon,
+                create_at:sentencedate,
+            }
+            $.ajax({
+                cache: false,
+                url: '/admin/sentence/edit/<%= sentence._id %>',
+                type: 'post',
+                data: postData,
+                dataType: 'json'
+            }).then(function (result) {
+                $.closeLoading();
+                if (result.state === 0) {
+                    alert(result.message);
+                }
+                if (result.state === 1) {
+                    alert(result.message);
+                    window.location.href = '/admin/sentence/';
+                }
+            }).catch(function () {
+                $.closeLoading();
+                alert("服务器错误，请稍后重试")
+            })
+        })
+    });
+</script>
+</body>
+</html>

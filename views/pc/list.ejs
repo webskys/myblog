@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<%- include('includes/listbanner') %>
+<div class="warp cl">
+    <div class="left">
+    <div class="list-warp">
+    <% if (typeof(articles) !== 'undefined' && articles.length > 0) { %>
+        <ul class="list-group">
+            <% articles.forEach(function (article) { %>
+            <li class="list-group-item cl">
+                <a class="item-readmore" href="/article/<%= article._id %>">Read more</a>
+                <% if ( article.icon !== '' && typeof article.icon !== "undefined") { %>
+                <div class="articleimg fl"><img src="<%= article.icon %>"></div>
+                <% } %>
+                <div class=articleitem>
+                    <h3>
+                        <span class="genreicon"><a href="/article/?genre=<%= article.genre.genreName %>"><img src="<%= article.genre.icon %>"></a></span>
+                        <a href="/article/<%= article._id %>"><%= article.title %></a>
+                    </h3>
+                    <div class="item-brief"><%= article.brief %></div>
+                    <div class="item-bottom">
+                        <span class="iconfont">&#xe92b;</span><span><%= article.visit_count %></span>
+                        <span class="iconfont">&#xe66a;</span><span><%= article.create_time %></span>
+                    </div>
+                </div>
+            </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+    <div class='noinfo'>
+        <p>无消息</p>
+    </div>
+    <% } %>
+        <%- include('includes/pages',{pages:pages}) %>
+    </div>
+    </div>
+    <div class="right">
+        <div class="right-warp">
+            <%- include('includes/genre') %>
+            <%- include('includes/news') %>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<div class="warp">
+    <%- include('includes/header') %>
+    <div class="content">
+        <div class="links-con">
+            <% links.forEach(function (link) { %>
+            <div class="links-con-item"><a href="<%= link.url %>" target="_blank" title="<%= link.title %>"><img src="<%= link.icon %>"></a></div>
+            <% }) %>
+        </div>
+    </div>
+    <%- include('includes/footer') %>
+</div>
+</body>
+</html>

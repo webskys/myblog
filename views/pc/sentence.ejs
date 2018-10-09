@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<div class="banner banner02"></div>
+<div class="warp cl">
+    <div class="list-warp">
+        <div class="sentence-con">
+        <div class="sentence" id="sentence"></div>
+        <div class="sentenceloading" id="dateLoad">
+            <div class="typing_loader"></div>
+        </div>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+<script type="text/x-handlebars-template" id="sentenceItem">
+    <div class="sentence-item">
+        <div class="sen-date">{{create_at}}</div>
+        <div class="sen-icon iconfont">&#xe618;</div>
+        <div class="sen-con"><div class="sen-con-i">{{content}}</div></div>
+    </div>
+</script>
+<script type="text/javascript">
+    let requestData = {
+        limit: 15,
+        page: 1
+    };
+    $(function () {
+        getSentences();
+        $(window).scroll(function () {
+            if($(this).scrollTop() + $(this).height() >= $("#dateLoad").offset().top){
+                if($("#dateLoad").data().next === 'true' && $("#dateLoad").data().isLoading === 'false'){
+                    requestData.page += 1;
+                    getSentences();
+                }
+            }
+
+        })
+    })
+    function getSentences() {
+        $("#dateLoad").data('isLoading','true');
+        $.ajax({cache: false, url: '/senlist', type: 'get', data: requestData, dataType: 'json'}).then(function (result) {
+            $("#dateLoad").data('isLoading','false');
+            getHtmlAndPages(result);
+        }).catch(function (err) {
+            console.log(err)
+            alert("服务器错误，请稍后重试")
+        })
+    }
+    function getHtmlAndPages(result) {
+        let currentPage = result.data.currentPage;
+        let totalCount = result.data.totalCount;
+        let totalPage = Math.ceil(totalCount/requestData.limit);
+        if(totalPage > currentPage){
+            $('#dateLoad').data('next','true')
+        }else {
+            $('#dateLoad').data('next','false').css('display','none')
+        }
+        let sentences = result.data.sentences;
+        let sentenceHtml = '';
+        let source   = $("#sentenceItem").html();
+        sentences.forEach(function (c,i,a) {
+            //a[i].content = html2Escape(a[i].content);
+            //a[i].content = marked(a[i].content);
+            sentenceHtml += source.render(a[i]);
+        })
+        $('#sentence').append(sentenceHtml);
+        $('.sen-con-i code').map(function() {
+            Prism.highlightElement(this);
+        });
+    }
+</script>
+</body>
+</html>
+
+
+
+

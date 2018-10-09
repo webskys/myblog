@@ -5,7 +5,7 @@ exports.addNewMessage = function(opt){
     return messageModel.create(opt)
 };
 exports.getMessageByQuery = function (query) {
-    return messageModel.find(query, {}).exec();
+    return messageModel.find(query, {},{sort: {create_at:-1}}).exec();
 };
 exports.deleteMessageById = function(id){
     return messageModel.deleteOne({_id: id});

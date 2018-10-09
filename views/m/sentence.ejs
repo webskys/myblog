@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+    <link rel="stylesheet" href="/css/prism.css">
+</head>
+<body>
+<div class="warp">
+    <%- include('includes/header') %>
+    <div class="content">
+        <div class="sentence-warp">
+            <div class="sentence" id="sentence">
+
+            </div>
+            <div class="sentenceloading" id="dateLoad">
+                <div class="typing_loader"></div>
+            </div>
+        </div>
+    </div>
+    <%- include('includes/footer') %>
+</div>
+<script type="text/x-handlebars-template" id="sentenceItem">
+    <div class="sentence-item">
+        <div class="sentence-time"><i class="iconfont">&#xe66a;</i>{{create_at}}</div>
+        <div class="sen-con-i">{{content}}</div>
+    </div>
+</script>
+<script type="text/javascript" src="/script/prism.js"></script>
+<script type="text/javascript">
+    String.prototype.render = function (context) {
+        return this.replace(/{{(.*?)}}/g, function(match, key){
+            return context[key.trim()]
+        });
+    };
+    var requestData = {
+        limit: 15,
+        page: 1
+    };
+    $(function () {
+        getSentences();
+        $(".content").scroll(function () {
+            if(this.scrollTop + this.offsetHeight >= this.scrollHeight){
+                if($("#dateLoad").data().next === 'true' && $("#dateLoad").data().isLoading === 'false'){
+                    requestData.page += 1;
+                    getSentences();
+                }
+            }
+
+        })
+    })
+    function getSentences() {
+        $("#dateLoad").data('isLoading','true');
+        $.ajax({cache: false, url: '/senlist', type: 'get', data: requestData, dataType: 'json'}).then(function (result) {
+            $("#dateLoad").data('isLoading','false');
+            getHtmlAndPages(result);
+        }).catch(function (err) {
+            alert("服务器错误，请稍后重试")
+        })
+    }
+    function getHtmlAndPages(result) {
+        var currentPage = result.data.currentPage;
+        var totalCount = result.data.totalCount;
+        var totalPage = Math.ceil(totalCount/requestData.limit);
+        if(totalPage > currentPage){
+            $('#dateLoad').data('next','true')
+        }else {
+            $('#dateLoad').data('next','false').css('display','none')
+        }
+        var sentences = result.data.sentences;
+        var sentenceHtml = '';
+        var source   = $("#sentenceItem").html();
+        sentences.forEach(function (c,i,a) {
+            sentenceHtml += source.render(a[i]);
+        })
+        $('#sentence').append(sentenceHtml);
+        $('.sen-con-i code').map(function() {
+            Prism.highlightElement(this);
+        });
+    }
+    function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g,function(c){
+            return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];
+        });
+    }
+</script>
+</body>
+</html>

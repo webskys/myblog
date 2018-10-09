@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<div class="banner banner02"></div>
+<div class="warp cl">
+    <div class="list-warp">
+        <div class="message-con">
+        <div class="message-t"><i class="iconfont">&#xe62f;</i><span>关于本站</span></div>
+        <div class="message-c">
+            <p>
+                　　闲得无聊翻翻前端开发的资源，由于记忆力不好，想把一些有用的文章保存下来，所以萌生了搭建博客的想法。
+            </p>
+            <p>
+                　　以前做淘客的时候用过一些CMS系统，大多采用PHP+MYSQL。原本也打算找个用过的系统直接上车赶路，想想还是算了。反正是学习加上以前有点JS基础就干脆从零开始边学NODE边建网站。
+            </p>
+            <p>
+                　　本站采用node.js + express + mongodb搭建，跟现在网上很多开源实例一样，都是些基础的东西，反正是能正常跑起了，能用就行。本部源码保存在 <a href="https://github.com/webskys/myblog" target="_blank">github</a> 上，欢迎下载。
+            </p>
+            <p>
+                　　边学边建的网站，难免有很多漏洞和不足的地方，欢迎大家能够指出来，不胜感激，也恳请别黑了小站。
+            </p>
+            <p>
+                　　网站内容一部分为自己学习总结，一部分为学习时收集的较好的文章，如有版权问题请联系我，我将第一时间处理。
+            </p>
+        </div>
+        <div class="message-d"><a href="https://github.com/webskys/myblog" target="_blank"><i class="iconfont">&#xe605;</i><i>本站源码</i></a></div>
+
+        <div class="message-t"><i class="iconfont">&#xe61d;</i><span>留言</span></div>
+                <div class="msg-item cl">
+                    <input name="name" id="msg-name" type="text" class="msg-input fl" placeholder="请输入姓名..." style="width: 40%">
+                    <input name="email" id="msg-email" type="email" class="msg-input fl" placeholder="请输入邮箱..." style="width: 40%; margin-left: 10%">
+                </div>
+            <div class="msg-item">
+                <textarea name="comments" id="comments" class="msg-input msg-textarea" rows="3" onresize="false" placeholder="请输入留言内容..."></textarea>
+            </div>
+            <div class="msg-item">
+                <button type="button" id="submit-msg" class="submit-msg">提 交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+<script type="text/javascript">
+    $("#submit-msg").click(function () {
+        var emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
+        var name = $("#msg-name").val();
+        var email = $("#msg-email").val();
+        var comment = $("#comments").val();
+
+        var editError = '';
+        if (name === '') {
+            editError = '姓名不能是空的。';
+        } else if (email === '') {
+            editError = '邮箱不能为空';
+        } else if (comment === '') {
+            editError = '留言内容不能为空';
+        }else if(!emailReg.test(email)){
+            editError = '邮箱格式不正确';
+        }
+        if (editError !== '') {
+            $('body').LiMask({content:editError});
+            return
+        }
+        $.showLoading();
+        var postData = {
+            name: name,
+            email: email,
+            comment: comment
+        }
+        $.ajax({
+            cache: false,
+            url: '/message',
+            type: 'post',
+            data: postData,
+            dataType: 'json'
+        }).then(function (result) {
+            $('body').LiMask({content:result.message});
+            $("#msg-name").add("#msg-email").add("#comments").val('');
+        }).catch(function () {
+            $('body').LiMask({content:'服务器错误，请稍后重试'});
+        }).always(function () {
+            $.closeLoading();
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <meta name="description" content="好记性不如烂笔头，一个记录前端开发相关知识的网站">
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<div class="index-genre">
+<div class="warp">
+    <% genres.forEach(function (genre) { %>
+    <% if (genre.isNav) { %>
+    <a href="/article/?genre=<%= genre.genreName %>" class="index-genre-a">
+        <div class="index-icon"><img src="<%= genre.icon %>"></div>
+        <div class="index-title"><%= genre.title %></div>
+    </a>
+    <% }}) %>
+</div>
+</div>
+<div class="warp">
+    <div class="list-warp">
+        <% if (typeof(articles) !== 'undefined' && articles.length > 0) { %>
+        <ul class="list-group">
+            <% articles.forEach(function (article) { %>
+            <li class="list-group-item cl">
+                <a class="item-readmore" href="/article/<%= article._id %>">Read more</a>
+                <% if ( article.icon !== '' && typeof article.icon !== "undefined") { %>
+                <div class="articleimg fl"><img src="<%= article.icon %>"></div>
+                <% } %>
+                <div class=articleitem>
+                    <h3>
+                        <span class="genreicon"><a href="/article/?genre=<%= article.genre.genreName %>"><img src="<%= article.genre.icon %>"></a></span>
+                        <a href="/article/<%= article._id %>"><%= article.title %></a>
+                    </h3>
+                    <div class="item-brief"><%= article.brief %></div>
+                    <div class="item-bottom">
+                        <span class="iconfont">&#xe92b;</span><span><%= article.visit_count %></span>
+                        <span class="iconfont">&#xe66a;</span><span><%= article.create_time %></span>
+                    </div>
+                </div>
+            </li>
+            <% }) %>
+        </ul>
+        <% } %>
+    </div>
+</div>
+<%- include('includes/footer') %>
+</body>
+</html>

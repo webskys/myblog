@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= pageTitle %></title>
+    <%- include('includes/meta') %>
+</head>
+<body>
+<div class="warp">
+    <%- include('includes/header') %>
+    <div class="content">
+            <% if (typeof(articles) !== 'undefined' && articles.length > 0) { %>
+            <div class="list-group">
+                <% articles.forEach(function (article) { %>
+                <a href="/article/<%= article._id %>" class="list-item">
+                    <div class="list-item-t">
+                        <span class="list-item-g-icon"><img src="<%= article.genre.icon %>"></span>
+                        <span class="list-item-title"><%= article.title %></span>
+                    </div>
+                    <div class="list-item-c">
+                        <% if ( article.icon !== '' && typeof article.icon !== "undefined") { %>
+                        <div class="list-item-icon fl"><img src="<%= article.icon %>"></div>
+                        <% } %>
+                        <div class="list-item-brief"><%= article.brief %></div>
+                    </div>
+                    <div class="list-item-bottom">
+                        <span class="iconfont">&#xe92b; <%= article.visit_count %></span>
+                        <span class="iconfont">&#xe66a; <%= article.create_time %></span>
+                    </div>
+                </a>
+                <% }) %>
+            </div>
+            <% } else { %>
+            <div class='list-noinfo'>
+                <p>暂无信息</p>
+            </div>
+            <% } %>
+                <%- include('includes/pages',{pages:pages}) %>
+        </div>
+    <%- include('includes/footer') %>
+</div>
+</body>
+</html>

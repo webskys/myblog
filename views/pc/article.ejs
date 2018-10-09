@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= pageTitle %></title>
+    <meta name="description" content="<%= article.brief %>">
+    <%- include('includes/meta') %>
+</head>
+<body>
+<%- include('includes/nav') %>
+<%- include('includes/pagebanner') %>
+<div class="warp cl">
+    <div class="left">
+        <div class="page-warp">
+            <div class="article-header">
+                <h1 class="article-title"><%= article.title %></h1>
+                <div class="article-dif">
+                    <span><i class="iconfont">&#xe92b;</i><%= article.visit_count %></span>
+                    <span><i class="iconfont">&#xe66a;</i><%= article.create_time %></span>
+                </div>
+                <div class="article-bfrief">
+                    <%= article.brief %>
+                </div>
+            </div>
+            <div class="article-con-warp">
+                <div class="article-xq" id="content">
+                    <%- article.content %>
+                </div>
+            </div>
+            <div class="article-np cl">
+                <div class="fl">
+                    <i class="iconfont fl a-left">&#xe7e8;</i>
+                    <% if(nextData){ %>
+                    <a href="/article/<%= nextData._id %>"><%= nextData.title %></a>
+                    <% }else{ %>
+                        <span>没有了</span>
+                    <% } %>
+                </div>
+                <div class="fr">
+                    <i class="iconfont fr a-right">&#xe7e8;</i>
+                    <% if(prevData){ %>
+                    <a href="/article/<%= prevData._id %>"><%= prevData.title %></a>
+                    <% }else{ %>
+                    <span>没有了</span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <div class="right-warp">
+            <%- include('includes/genre') %>
+            <%- include('includes/news') %>
+        </div>
+    </div>
+</div>
+<%- include('includes/footer') %>
+<script type="text/javascript">
+    $(function () {
+        $('.article-xq code').map(function() {
+            Prism.highlightElement(this);
+        });
+        $('.article-xq a[href]').each(function() {
+            $(this).attr('target', '_blank');
+        });
+        $('.article-xq table').wrap('<div class="table-warp" />')
+    })
+</script>
+</body>
+</html>

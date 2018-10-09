@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title><%= pageTitle %></title>
+    <meta name="description" content="好记性不如烂笔头，一个记录前端开发相关知识的网站">
+    <%- include('includes/meta') %>
+</head>
+<body>
+<div class="warp">
+    <%- include('includes/header') %>
+    <div class="content">
+        <div class="ind-logo">
+            <h1><img src="/img/banner.png" alt="tensweets 十个糖果"></h1>
+        </div>
+        <div class="ind-genre">
+            <% genres.forEach(function (genre) { %>
+            <div class="ind-genre-item">
+                <a href="/article/?genre=<%= genre.genreName %>"><img src="<%= genre.icon %>"></a>
+            </div>
+            <% }) %>
+        </div>
+        <div class="ind-content">
+
+            <% articles.forEach(function (article) { %>
+            <a href="/article/<%= article._id %>" class="ind-content-item">
+                <div class="article-text">
+                    <div class="article-text-h"><%= article.title %></div>
+                    <div class="article-text-f"><span><img src="<%= article.genre.icon %>" class="genre-icon"></span><span><%= article.genre.title %></span><span class="iconfont">&#xe66a;</span><span><%= article.create_time %></span></div>
+                </div>
+                <% if ( article.icon !== '' && typeof article.icon !== "undefined") { %>
+                <div class="article-img"><img src="<%= article.icon %>"></div>
+                <% } %>
+            </a>
+            <% }) %>
+        </div>
+    </div>
+    <%- include('includes/footer') %>
+</div>
+</body>
+</html>

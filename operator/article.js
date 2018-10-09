@@ -40,5 +40,5 @@ exports.getArticleGenreCount = function () {
 };
 
 exports.getLatest = function (query,count) {
-    return articleModel.find(query, {'title':1}, {limit: count, sort: {create_at:-1}}).exec();
+    return articleModel.find(query, {'reply_count':1,'visit_count':1,'icon':1,'title':1,'brief':1,'create_at':1,'update_at':1},{populate:'genre',limit: count, sort: {create_at:-1}}).exec();
 };

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表格排序功能</title>
+    <style type="text/css">
+        * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        .tablecon {
+            width: 500px;
+            margin: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 3px 5px;
+            text-align: center;
+            border: 1px solid #CCCCCC;
+        }
+        .table .clickitem{
+            cursor: pointer;
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<p style="text-align: center">点击课程名称排序</p>
+<div class="tablecon">
+    <table id="stuTable" class="table">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th class="clickitem" data-col="1">语文</th>
+            <th class="clickitem" data-col="2">数学</th>
+            <th class="clickitem" data-col="3">英语</th>
+            <th class="clickitem" data-col="4">物理</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>张三</td>
+            <td>115</td>
+            <td>105</td>
+            <td>95</td>
+            <td>121</td>
+        </tr>
+        <tr>
+            <td>李四</td>
+            <td>120</td>
+            <td>121</td>
+            <td>92</td>
+            <td>140</td>
+        </tr>
+        <tr>
+            <td>王五</td>
+            <td>98</td>
+            <td>113</td>
+            <td>102</td>
+            <td>103</td>
+        </tr>
+        <tr>
+            <td>赵六</td>
+            <td>142</td>
+            <td>98</td>
+            <td>132</td>
+            <td>99</td>
+        </tr>
+        <tr>
+            <td>胡七</td>
+            <td>99</td>
+            <td>78</td>
+            <td>88</td>
+            <td>95</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    let oTable = document.getElementById('stuTable');
+    let oRows = oTable.tBodies[0].rows;
+    let tHead = oTable.tHead;
+    let cRows = [];
+    for(let i=0;i<oRows.length;i++){
+        cRows[i] = oRows[i]
+    }
+    tHead.addEventListener('click',changeTable);
+    function changeTable(e) {
+        let cTarget = e.target;
+        if(cTarget.classList.contains('clickitem')){
+            let iCol = cTarget.dataset.col;
+            if (oTable.sortCol === iCol) {
+                cRows.reverse();
+            } else {
+                cRows.sort(compareFn(iCol));
+            }
+            let oFragment = document.createDocumentFragment();
+            for (let i=0; i < cRows.length; i++) {
+                oFragment.appendChild(cRows[i]);
+            }
+            oTable.tBodies[0].appendChild(oFragment);
+            oTable.sortCol = iCol;
+        }
+    }
+    function compareFn(i) {
+        return function (a,b) {
+            let aValue = a.getElementsByTagName('td')[i].firstChild.nodeValue;
+            let bValue = b.getElementsByTagName('td')[i].firstChild.nodeValue;
+            if (aValue < bValue) {
+                return -1;
+            } else if (aValue > bValue) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+</script>
+</body>
+</html>
