@@ -218,7 +218,7 @@ exports.details = function (req,res,next) {
     Promise.all([queryArticle,addVisitor]).then(function (result) {
         pageData.pageTitle = result[0].title;
         pageData.article = result[0];
-        pageData.article.create_time = moment(pageData.article).fromNow();
+        pageData.article.create_time = moment(pageData.article.create_at).fromNow();
         pageData.article.content = markdown.render(pageData.article.content);
         let prevData = articleOperator.prevData(articleId,result[0].genre);
         let nextData = articleOperator.nextData(articleId,result[0].genre);
